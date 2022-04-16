@@ -1,0 +1,28 @@
+Project Wss_chat {
+  database_type: 'PostgreSQL'
+  Note: 'wss simple chat'
+}
+
+Table users as U{
+  username varchar [pk]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table rooms as R{
+  name varchar [pk]
+  creator varchar [not null, ref: > U.username]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+
+Table messages as M{
+  id bigserial [pk, increment]
+  sender varchar [not null, ref: > U.username]
+  room varchar [not null, ref: > R.name]
+  payload varchar [not null]
+  created_at timestamptz [not null, default: `now()`]
+  
+  Indexes{
+    (created_at,room)
+  }
+}

@@ -1,0 +1,55 @@
+version: 3
+
+dotenv: ['app.env']
+
+vars:
+  source: ${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?sslmode=disable
+
+env:
+  ENV: testing
+  MIGRATE_FORCE_V: 2
+
+
+tasks:
+  hello: echo {{.source}}
+
+  postgres: 
+    cmds:
+      - docker run --name ${DB_DRIVER} -p ${DB_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:12-alpine
+      - ping 127.0.0.1 -n 4 > nul
+    status:
+      - docker exec ${DB_DRIVER} /bin/bash
+    preconditions:
+      - sh: "command -v docker"
+        msg: "docker is not installed" 
+
+  createdb: docker exec -it ${DB_DRIVER} createdb --user=${DB_USER} --owner=${DB_USER} ${DB_DATABASE} || true
+
+  migrateup: migrate -path db/migration -database {{.source}} -verbose up
+
+  checkMigrate: 
+    preconditions:
+      - sh: "command -v migrate"
+        msg: "migrate is not installed"
+  
+  setup:
+    deps: [checkMigrate]
+    cmds:
+      - task: postgres
+      - task: createdb
+      - task: migrateup
+
+  sqlc:
+    cmds:
+      - docker run --rm -v $pwd/:/src -w /src kjconroy/sqlc generate 
+    sources:
+      - ./db/query/*.sql
+      - sqlc.yaml
+    generates:
+      - ./db/sqlc/*.sql.go
+    method: checksum
+    preconditions:
+      - sh: "command -v docker"
+        msg: "docker is not installed"
+
+  run: go run cmd/server/main.go
