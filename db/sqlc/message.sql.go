@@ -5,6 +5,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createMessage = `-- name: CreateMessage :one
@@ -34,4 +35,46 @@ func (q *Queries) CreateMessage(ctx context.Context, arg CreateMessageParams) (M
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const getMessages = `-- name: GetMessages :many
+SELECT id, sender, room, payload, created_at 
+FROM messages 
+WHERE room=$1
+AND created_at >= $2
+ORDER BY created_at
+`
+
+type GetMessagesParams struct {
+	Room string    `json:"room"`
+	Ago  time.Time `json:"ago"`
+}
+
+func (q *Queries) GetMessages(ctx context.Context, arg GetMessagesParams) ([]Message, error) {
+	rows, err := q.db.QueryContext(ctx, getMessages, arg.Room, arg.Ago)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Message{}
+	for rows.Next() {
+		var i Message
+		if err := rows.Scan(
+			&i.ID,
+			&i.Sender,
+			&i.Room,
+			&i.Payload,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

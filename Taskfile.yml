@@ -18,6 +18,7 @@ tasks:
       - docker run --name ${DB_DRIVER} -p ${DB_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:12-alpine
       - ping 127.0.0.1 -n 4 > nul
     status:
+      - docker start ${DB_DRIVER} || true
       - docker exec ${DB_DRIVER} /bin/bash
     preconditions:
       - sh: "command -v docker"
@@ -52,4 +53,21 @@ tasks:
       - sh: "command -v docker"
         msg: "docker is not installed"
 
+  swag:
+    cmds:
+      - swag fmt
+      - swag init -g server/server.go
+    sources:
+      - ./server/*.go
+    generates:
+      - ./docs/*
+    method: checksum
+    preconditions:
+      - sh: "command -v swag"
+        msg: "swag is not installed"
+
   run: go run cmd/server/main.go
+  runw: 
+    cmds:
+      - go build -o server.exe main.go 
+      - server.exe

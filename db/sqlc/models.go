@@ -16,11 +16,5 @@ type Message struct {
 
 type Room struct {
 	Name      string    `json:"name"`
-	Creator   string    `json:"creator"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
-type User struct {
-	Username  string    `json:"username"`
 	CreatedAt time.Time `json:"created_at"`
 }

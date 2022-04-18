@@ -6,3 +6,11 @@ INSERT INTO messages (
 ) VALUES (
   $1,$2,$3
 ) RETURNING *;
+
+-- name: GetMessages :many
+SELECT * 
+FROM messages 
+WHERE room=$1
+AND created_at >= @ago
+ORDER BY created_at;
+

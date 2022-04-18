@@ -9,21 +9,43 @@ import (
 
 const createRoom = `-- name: CreateRoom :one
 INSERT INTO rooms (
-  name,
-  creator
+  name
 ) VALUES (
-  $1, $2
-) RETURNING name, creator, created_at
+  $1
+) RETURNING name, created_at
 `
 
-type CreateRoomParams struct {
-	Name    string `json:"name"`
-	Creator string `json:"creator"`
+func (q *Queries) CreateRoom(ctx context.Context, name string) (Room, error) {
+	row := q.db.QueryRowContext(ctx, createRoom, name)
+	var i Room
+	err := row.Scan(&i.Name, &i.CreatedAt)
+	return i, err
 }
 
-func (q *Queries) CreateRoom(ctx context.Context, arg CreateRoomParams) (Room, error) {
-	row := q.db.QueryRowContext(ctx, createRoom, arg.Name, arg.Creator)
-	var i Room
-	err := row.Scan(&i.Name, &i.Creator, &i.CreatedAt)
-	return i, err
+const getRooms = `-- name: GetRooms :many
+SELECT name, created_at FROM rooms
+ORDER BY name
+`
+
+func (q *Queries) GetRooms(ctx context.Context) ([]Room, error) {
+	rows, err := q.db.QueryContext(ctx, getRooms)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Room{}
+	for rows.Next() {
+		var i Room
+		if err := rows.Scan(&i.Name, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

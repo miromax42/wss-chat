@@ -1,0 +1,50 @@
+basePath: /
+definitions:
+  db.Room:
+    properties:
+      created_at:
+        type: string
+      name:
+        type: string
+    type: object
+  server.Error:
+    properties:
+      error:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server of wss-chat.
+  title: Simple websocket chat API
+  version: "1.0"
+paths:
+  /rooms:
+    get:
+      description: get all rooms from db
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.Room'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/server.Error'
+      summary: Get all rooms
+      tags:
+      - room
+  /ws/{name}:
+    get:
+      description: websocket chat endpoint to connect specified room
+      produces:
+      - application/json
+      responses: {}
+      summary: WebSocket chat
+      tags:
+      - chat
+swagger: "2.0"

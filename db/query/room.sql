@@ -1,7 +1,10 @@
 -- name: CreateRoom :one
 INSERT INTO rooms (
-  name,
-  creator
+  name
 ) VALUES (
-  $1, $2
+  $1
 ) RETURNING *;
+
+-- name: GetRooms :many
+SELECT * FROM rooms
+ORDER BY name;
