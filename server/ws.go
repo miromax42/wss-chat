@@ -17,6 +17,8 @@ type wsRequest struct {
 // wsEnpoint godoc
 // @Summary      WebSocket chat
 // @Description  websocket chat endpoint to connect specified room
+// @Param        room  query  string  true   "Room to connect via ws"
+// @Param        time  query  string  false  "Time to load history of messages (1h, 5m etc.)"
 // @Tags         chat
 // @Produce      json
 // @Router       /ws [get]

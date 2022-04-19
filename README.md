@@ -1,8 +1,10 @@
 # wss-chat
 
-simple chat based on wss
+Simple websocket chat backend (MVP)
 
-# ТЗ
+## Задача
+
+### ТЗ
 
 Необходимо реализовать чат сервис на WSS:
 
@@ -14,15 +16,54 @@ simple chat based on wss
 
 Суть тестового задания - написать упрощенный Телеграмм. В чат можно пересылать любые текстовые сообщения. Загрузка файлов не требуется.
 
-# Documentation
+### Результат
 
-- [DB](https://dbdocs.io/miromax42/wss-chat)
-- API endpoint: `/swagger/index.html`
+- [x] Чат разделен на комнаты. Участники чата, не получают уведомления о действия в другом
+- [x] Пользователь, при подклюении к комнате, видит сообщения за запрошенное количество минут
+- [x] О подлючении нового пользователя сообщается всем участникам комнаты
+- [x] По АПИ доступен запрос для получения всех комнат
+- [x] Любой пользователь имеет возможность подключения к нескольким чатам
+- [x] База задокументирована
+- [x] АПИ задокументировано
+- [ ] Приложение представляет собой минимально жизнеспособный продукт
+  - база и приложение никак не сохраняют состояние
+  - АПИ минимально и реализует полный CRUDL
 
-# Start server
+## Documentation
+
+- [DB docs](https://dbdocs.io/miromax42/wss-chat)
+- API swagger [endpoint](http://localhost:8080/swagger/index.html): `/swagger/index.html`
+
+## Start server
 
 > depencies: docker
 
 ```bash
 docker compose up
 ```
+
+## Usage
+
+### API
+
+>Examples for localhost:8080
+
+- Get rooms
+
+  ```bash
+  curl --location --request GET 'http://localhost:8080/rooms'
+  ```
+
+### Chat usage
+
+1. Connect to chat
+   - Connect `ws://localhost:8080/ws?room=public`, where `public` is room you want to connect
+   - Default time for message history is `1 minute`. But you can set it via form `ws://localhost:8080/ws?room=public&time=1h` (message history = 1 Hour)
+2. Send message: json with required fields(`sender`, `payload`)
+
+   ```json
+    {
+       "sender":"your_username",
+       "payload":"test messasage!"
+    }
+   ```

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	db "github.com/miromax42/wss-chat/db/sqlc"
@@ -59,14 +58,13 @@ func New(ctx context.Context, config util.Config, store *db.Queries) (*Server, e
 func (s *Server) setupRoutes() {
 	router := gin.Default()
 
+	// ws endpoint
 	router.GET("/ws", s.wsEnpoint)
+
+	// api
 	router.GET("/rooms", s.getRooms)
 
-	router.Use(static.Serve("/", static.LocalFile("./public", true)))
-	router.NoRoute(func(c *gin.Context) {
-		c.File("./public/index.html")
-	})
-
+	// swagger
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	s.router = router

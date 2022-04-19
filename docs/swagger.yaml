@@ -38,9 +38,19 @@ paths:
       summary: Get all rooms
       tags:
       - room
-  /ws/{name}:
+  /ws:
     get:
       description: websocket chat endpoint to connect specified room
+      parameters:
+      - description: Room to connect via ws
+        in: query
+        name: room
+        required: true
+        type: string
+      - description: Time to load history of messages (1h, 5m etc.)
+        in: query
+        name: time
+        type: string
       produces:
       - application/json
       responses: {}

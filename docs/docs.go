@@ -45,7 +45,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/ws/{name}": {
+        "/ws": {
             "get": {
                 "description": "websocket chat endpoint to connect specified room",
                 "produces": [
@@ -55,6 +55,21 @@ const docTemplate = `{
                     "chat"
                 ],
                 "summary": "WebSocket chat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Room to connect via ws",
+                        "name": "room",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Time to load history of messages (1h, 5m etc.)",
+                        "name": "time",
+                        "in": "query"
+                    }
+                ],
                 "responses": {}
             }
         }
