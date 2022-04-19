@@ -1,6 +1,9 @@
 # wss-chat
+
 simple chat based on wss
+
 # ТЗ
+
 Необходимо реализовать чат сервис на WSS:
 
 - Чат должен быть разделен на комнаты
@@ -13,8 +16,13 @@ simple chat based on wss
 
 # Documentation
 
-* [DB](https://dbdocs.io/miromax42/wss-chat)
-* API endpoint: /swagger/index.html 
+- [DB](https://dbdocs.io/miromax42/wss-chat)
+- API endpoint: `/swagger/index.html`
 
 # Start server
-> depencies: docker, [taskfile](https://taskfile.dev/#/installation)
+
+> depencies: docker
+
+```bash
+docker compose up
+```
