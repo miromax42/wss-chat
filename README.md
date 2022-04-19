@@ -2,6 +2,16 @@
 
 Simple websocket chat backend (MVP)
 
+- [wss-chat](#wss-chat)
+  - [Задача](#задача)
+    - [ТЗ](#тз)
+    - [Результат](#результат)
+  - [Documentation](#documentation)
+  - [Start server](#start-server)
+  - [Usage](#usage)
+    - [API](#api)
+    - [Chat usage](#chat-usage)
+
 ## Задача
 
 ### ТЗ
