@@ -72,8 +72,8 @@ docker compose up
 2. Send message: json with required fields(`sender`, `payload`)
 
    ```json
-    {
-       "sender":"your_username",
-       "payload":"test messasage!"
-    }
+   {
+    "sender":"your_username",
+    "payload":"test messasage!"
+   }
    ```
