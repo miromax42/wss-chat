@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	db "github.com/miromax42/wss-chat/db/sqlc"
-	_ "github.com/miromax42/wss-chat/docs" //nolint:revive //for swaggo
+	_ "github.com/miromax42/wss-chat/docs" // swagger docs generated
 	"github.com/miromax42/wss-chat/util"
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware

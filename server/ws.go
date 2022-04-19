@@ -11,7 +11,7 @@ import (
 
 type wsRequest struct {
 	Room        string `form:"room" binding:"required"`
-	HistoryTime string `form:"time" default:"1m"`
+	HistoryTime string `form:"time"`
 }
 
 // wsEnpoint godoc
@@ -21,19 +21,20 @@ type wsRequest struct {
 // @Produce      json
 // @Router       /ws [get]
 func (s *Server) wsEnpoint(ctx *gin.Context) {
+	// parse params
 	var req wsRequest
 	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+
 		return
 	}
 
 	historyTime, err := time.ParseDuration(req.HistoryTime)
 	if err != nil {
-		log.Printf("bad time in query: %s", err)
-
-		return
+		historyTime = time.Minute
 	}
 
+	// create room in db
 	_, err = s.store.CreateRoom(ctx, req.Room)
 	if err != nil {
 		if pqErr, ok := err.(*pq.Error); ok {
@@ -51,6 +52,7 @@ func (s *Server) wsEnpoint(ctx *gin.Context) {
 		}
 	}
 
+	// upgrade request
 	s.upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 
 	ws, err := s.upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
@@ -64,6 +66,7 @@ func (s *Server) wsEnpoint(ctx *gin.Context) {
 	if _, ok := s.hubs.Load(req.Room); !ok {
 		hub := newHub(req.Room)
 		s.hubs.Store(req.Room, hub)
+
 		go hub.run()
 	}
 

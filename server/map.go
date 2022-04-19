@@ -11,6 +11,7 @@ func (m *MapRW) Load(key string) (*Hub, bool) {
 	m.mx.RLock()
 	defer m.mx.RUnlock()
 	val, ok := m.m[key]
+
 	return val, ok
 }
 
@@ -23,6 +24,8 @@ func (m *MapRW) Store(key string, value *Hub) {
 func (m *MapRW) LoadForce(key string) *Hub {
 	m.mx.RLock()
 	defer m.mx.RUnlock()
-	val, _ := m.m[key]
+
+	val := m.m[key]
+
 	return val
 }

@@ -71,3 +71,11 @@ tasks:
     cmds:
       - go build -o server.exe main.go 
       - server.exe
+
+  db_docs: 
+    cmds:
+      - dbdocs password --set secret --project wss-chat
+      - dbdocs build doc/db.dbml --project wss-chat
+  db_schema: dbml2sql --postgres -o doc/schema.sql doc/db.dbml
+
+  fmt: gofumpt -l -w .

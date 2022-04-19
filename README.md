@@ -10,3 +10,11 @@ simple chat based on wss
 - Каждый участник чата может заходить сразу в несколько комнат
 
 Суть тестового задания - написать упрощенный Телеграмм. В чат можно пересылать любые текстовые сообщения. Загрузка файлов не требуется.
+
+# Documentation
+
+* [DB](https://dbdocs.io/miromax42/wss-chat)
+* API endpoint: /swagger/index.html 
+
+# Start server
+> depencies: docker, [taskfile](https://taskfile.dev/#/installation)
